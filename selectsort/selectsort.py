@@ -4,7 +4,6 @@ from random import randint
 import timeit
 import numpy as np
 import scipy.interpolate as interpolate
-from threading import Thread
 import sys 
 
 reload(sys)  
@@ -35,24 +34,19 @@ def listAsc(size):
         listt.append(i+1)
     return listt
 
-#bubblesort
-def sort(vector):
-    size = len(vector)
-    while(size > 1):
-        troca = False
-        x = 0
-        while(x < (size-1)):
-            if(vector[x] > vector[x+1]):
-                troca = True
-                aux= vector[x]
-                vector[x] = vector[x+1]
-                vector[x+1] = aux
-            x +=1
-        if not troca:
-            break
-        size -= 1
+#selectionsort
+def sort(vetor):
+	for posi in range(len(vetor)-1,0,-1):
+		posi_max = 0
+		for posi1 in range(1, posi+1):
+			if vetor[posi1] > vetor[posi_max]:
+				posi_max = posi1
 
-    return vector
+		aux = vetor[posi]
+		vetor[posi] = vetor[posi_max]
+		vetor[posi_max] = aux
+
+	return vetor
 
 def drawGraph(x,y,l, n, xl = "Nº de Elementos", yl = "Tempo(s)"):
     xnew = np.linspace(min(x), max(x), 10 * (max(x) - min(x)))
@@ -60,35 +54,47 @@ def drawGraph(x,y,l, n, xl = "Nº de Elementos", yl = "Tempo(s)"):
     suave = interpolate.BSpline(a, b, c, extrapolate=False)
     plt.subplot(n)
     plt.plot(xnew, suave(xnew), label="Curva Suave")
-    plt.plot(x,y, label="Curva Não Suave")
+    plt.plot(x,y, label="Curva Sem Suaveização")
     plt.legend(bbox_to_anchor=(1, 1),bbox_transform=plt.gcf().transFigure)
     plt.ylabel(yl)
     plt.xlabel(xl)
     plt.title(l, fontsize=12)
 
 #template to sort list generated
-def midCase(nums1):
-	numbers = nums1
+def midCase(nums0):
+	nums = nums0
 	time = []
-	for r in numbers:
+	for r in nums:
 	    print(r)
 	    vector = generateList(r)
 	    tempo = timeit.timeit("sort({})".format(vector),setup="from __main__ import sort",number=1)
 	    time.append(tempo)
 
-	drawGraph(numbers, time,'Caso Medio',211, "Nº de Elementos", "Tempo(s)")
+	drawGraph(nums, time,'Caso Medio',211, "Nº de Elementos", "Tempo(s)")
 
 def worseCase(nums1):
-	numbers=nums1
+	nums=nums1
 	time1=[]
-	for r in numbers:
+	for r in nums:
 		print (r)
 		vector1 = listDesc(r)
 		tempo = timeit.timeit("sort({})".format(vector1),setup="from __main__ import sort",number=1)
 		time1.append(tempo)
 
-	drawGraph(numbers, time1, 'Pior Caso',212, "Nº de Elementos", "Tempo(s)")
-    
+	drawGraph(nums, time1, 'Pior Caso',212, "Nº de Elementos", "Tempo(s)")
+
+def bestCase(nums2):
+	nums=nums2
+	time2=[]
+	for r in nums:
+		print (r)
+		vector1 = listAsc(r)
+		tempo = timeit.timeit("sort({})".format(vector1),setup="from __main__ import sort",number=1)
+		time2.append(tempo)
+
+	drawGraph(nums, time2, 'Melhor Caso',212, "Nº de Elementos", "Tempo(s)")
+
 midCase(numbers)
 worseCase(numbers)
+bestCase(numbers)
 plt.show()
