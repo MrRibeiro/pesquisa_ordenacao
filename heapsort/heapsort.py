@@ -33,22 +33,32 @@ def listAsc(size):
         listt.append(i+1)
     return listt
 
-#radixSort
+#heapsort
 def sort(lista):
-   
-    bucket = [ [],[],[],[],[],[],[],[],[],[] ]
-    maximo = max(lista)
-    div = 1
-    
-    while maximo > div:
-        for numList in lista:
-            bucket[int((numList/div)%10)].append(numList)
-
-        div = div * 10
-        lista = []
-        for i in range(10):
-            lista.extend(bucket[i])
-            bucket[i] = []
+    n = len(lista)
+    i = len(lista) // 2
+    while (True):
+        if (i > 0):
+            i -= 1
+            t = lista[i]
+        else:
+            n -= 1
+            if (n == 0):
+                return
+            t = lista[n]
+            lista[n] = lista[0]
+        pai = i
+        filho = (i * 2) + 1
+        while (filho < n):
+            if ((filho + 1 < n) and (lista[filho + 1] > lista[filho])):
+                filho += 1
+            if (lista[filho] > t):
+                lista[pai] = lista[filho]
+                pai = filho
+                filho = (pai * 2) + 1
+            else:
+                break
+        lista[pai] = t
 
 
 def drawGraph(x,y,l,k,n, xl = "Nº de Elementos", yl = "Tempo(s)"):
@@ -63,16 +73,16 @@ def drawGraph(x,y,l,k,n, xl = "Nº de Elementos", yl = "Tempo(s)"):
     plt.title(l, fontsize=12)
 
 #template to sort list generated
-# def midCase(nums0):
-#     nums = nums0
-#     time = []
-#     for r in nums:
-#         print(r)
-#         vector = generateList(r)
-#         tempo = timeit.timeit("sort({})".format(vector),setup="from __main__ import sort",number=1)
-#         time.append(tempo)
+def midCase(nums0):
+    nums = nums0
+    time = []
+    for r in nums:
+        print(r)
+        vector = generateList(r)
+        tempo = timeit.timeit("sort({})".format(vector),setup="from __main__ import sort",number=1)
+        time.append(tempo)
 
-#     drawGraph(nums, time,'Radix Sort', "Caso Medio",111, "Nº de Elementos", "Tempo(s)")
+    drawGraph(nums, time,'Heap Sort', "Caso Medio",111, "Nº de Elementos", "Tempo(s)")
 
 def worseCase(nums1):
     nums=nums1
@@ -83,20 +93,20 @@ def worseCase(nums1):
         tempo = timeit.timeit("sort({})".format(vector1),setup="from __main__ import sort",number=1)
         time1.append(tempo)
 
-    drawGraph(nums, time1, 'Radix Sort', "Pior Caso",111, "Nº de Elementos", "Tempo(s)")
+    drawGraph(nums, time1, 'Heap Sort', "Pior Caso",111, "Nº de Elementos", "Tempo(s)")
 
-def bestCase(nums2):
-    nums=nums2
-    time2=[]
-    for r in nums:
-        print (r)
-        vector1 = listAsc(r)
-        tempo = timeit.timeit("sort({})".format(vector1),setup="from __main__ import sort",number=1)
-        time2.append(tempo)
+# def bestCase(nums2):
+#     nums=nums2
+#     time2=[]
+#     for r in nums:
+#         print (r)
+#         vector1 = listAsc(r)
+#         tempo = timeit.timeit("sort({})".format(vector1),setup="from __main__ import sort",number=1)
+#         time2.append(tempo)
 
-    drawGraph(nums, time2, 'Radix Sort', "Melhor Caso",111, "Nº de Elementos", "Tempo(s)")
+#     drawGraph(nums, time2, 'Heap Sort', "Melhor Caso",111, "Nº de Elementos", "Tempo(s)")
 
-#midCase(numbers)
+midCase(numbers)
 worseCase(numbers)
-bestCase(numbers)
+#bestCase(numbers)
 plt.show()
